@@ -218,6 +218,7 @@ open class SecureSecrets : Plugin<Project> {
                 keyList.forEach { key ->
                     var keyName = properList.getValue("SECURE_KEY_${key}").toString()
                     keyName = keyName.replace("_", " ").capitalizeString().replace(" ", "")
+                    println("Elias-- $buildTypesSuffix")
                     val obfuscatedKey = getObfuscatedKeyParam(
                         properList.getValue("SECURE_VALUE_${buildTypeKey}_${key}").toString(), project, buildTypesSuffix
                     )
@@ -380,7 +381,11 @@ open class SecureSecrets : Plugin<Project> {
         val packageName = getPackageNameParam(project)
         println("### PACKAGE NAME ###\n$packageName\n")
 
-        val encodedKey = Utils.encodeSecret(keyValue, packageName.plus(".$prefix"))
+        val encodedKey = if (prefix.isNullOrEmpty()){
+            Utils.encodeSecret(keyValue, packageName)
+        } else {
+            Utils.encodeSecret(keyValue, packageName.plus(".$prefix"))
+        }
         println("### OBFUSCATED SECRET ###\n$encodedKey")
         return encodedKey
     }
