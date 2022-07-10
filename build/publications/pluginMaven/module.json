@@ -11,7 +11,7 @@
   "createdBy": {
     "gradle": {
       "version": "6.8",
-      "buildId": "aibjllwwdnesxo556aeuowjiay"
+      "buildId": "6rtyh6klxrfdfgf64ngjbwhkbq"
     }
   },
   "variants": [
@@ -30,11 +30,11 @@
         {
           "name": "SecureSecrets-1.0.1.jar",
           "url": "SecureSecrets-1.0.1.jar",
-          "size": 44969,
-          "sha512": "0ae68ee9f42325758722eafe8613e34b6498566a52ec503e41727a0d1586784a3c97fc96b7fc2b94a1bb687363e4cedb0f0bb29406123cdfe556ad5ad2d38eac",
-          "sha256": "5179e5019fcf101e9307cd6cf6f8822c64ba8353985a019aecba3952553f5416",
-          "sha1": "c9eb037973ed9b531ea16debc0567a17e36bf482",
-          "md5": "41c460f3df3e679021c650eda1c931cd"
+          "size": 45544,
+          "sha512": "b4c4d62267e81edf593583ae81938dd761cc46bb4533b4b801d7f777e85331cc55fbbcccb78a4105613819506bfadf6359064f3934cde193e0cddde6399854fb",
+          "sha256": "8146d5cc457ab23cf9d0ba78e990b38ad33b4036d5d76636ce9ccff77f0ff944",
+          "sha1": "0db74f826902709d73e805d2b71a83c985bc6e6e",
+          "md5": "be41b47bb0359061d98c2c30e3107e4e"
         }
       ]
     },
@@ -69,11 +69,11 @@
         {
           "name": "SecureSecrets-1.0.1.jar",
           "url": "SecureSecrets-1.0.1.jar",
-          "size": 44969,
-          "sha512": "0ae68ee9f42325758722eafe8613e34b6498566a52ec503e41727a0d1586784a3c97fc96b7fc2b94a1bb687363e4cedb0f0bb29406123cdfe556ad5ad2d38eac",
-          "sha256": "5179e5019fcf101e9307cd6cf6f8822c64ba8353985a019aecba3952553f5416",
-          "sha1": "c9eb037973ed9b531ea16debc0567a17e36bf482",
-          "md5": "41c460f3df3e679021c650eda1c931cd"
+          "size": 45544,
+          "sha512": "b4c4d62267e81edf593583ae81938dd761cc46bb4533b4b801d7f777e85331cc55fbbcccb78a4105613819506bfadf6359064f3934cde193e0cddde6399854fb",
+          "sha256": "8146d5cc457ab23cf9d0ba78e990b38ad33b4036d5d76636ce9ccff77f0ff944",
+          "sha1": "0db74f826902709d73e805d2b71a83c985bc6e6e",
+          "md5": "be41b47bb0359061d98c2c30e3107e4e"
         }
       ]
     }

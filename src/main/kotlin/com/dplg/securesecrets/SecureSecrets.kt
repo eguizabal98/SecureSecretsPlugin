@@ -169,14 +169,32 @@ open class SecureSecrets : Plugin<Project> {
         tmpFolder: String,
         extension: SecureSecretsPluginExtension
     ) {
+        // Get different variants of the project
         variant.javaCompileProvider.dependsOn("${TASK_HIDE_MULTIPLE_SECRETS}${variant.name}")
         project.task("${TASK_HIDE_MULTIPLE_SECRETS}${variant.name}") {
             dependsOn(TASK_UNZIP_HIDDEN_SECRETS)
 
             doLast {
-                val buildTypeIndex = extension.buildTypesName.get().indexOf(variant.name)
-                val buildTypeKey = extension.buildTypeKeys.get()[buildTypeIndex]
-                println(buildTypeKey)
+                val buildTypeIndex: Int?
+                var buildTypesSuffix: String? = null
+
+                buildTypeIndex = extension.buildTypesName.get().indexOf(variant.name)
+
+                val buildTypeKey = if (buildTypeIndex != null && buildTypeIndex >= 0) {
+                    try {
+                        extension.buildTypeKeys.get()[buildTypeIndex]
+                    } catch (e: Exception) {
+                        variant.name
+                    }
+                } else {
+                    variant.name
+                }
+
+                println("Elias-- $buildTypeIndex - ${extension.buildTypesName.get()}")
+                if (extension.buildTypesSuffix.get().isNotEmpty() && buildTypeIndex >= 0) {
+                    buildTypesSuffix = extension.buildTypesSuffix.get()[buildTypeIndex]
+                }
+
                 //Copy files if they don't exist
                 copyCppFiles(project, tmpFolder)
                 copyKotlinFile(project, tmpFolder)
@@ -201,7 +219,7 @@ open class SecureSecrets : Plugin<Project> {
                     var keyName = properList.getValue("SECURE_KEY_${key}").toString()
                     keyName = keyName.replace("_", " ").capitalizeString().replace(" ", "")
                     val obfuscatedKey = getObfuscatedKeyParam(
-                        properList.getValue("SECURE_VALUE_${buildTypeKey}_${key}").toString(), project
+                        properList.getValue("SECURE_VALUE_${buildTypeKey}_${key}").toString(), project, buildTypesSuffix
                     )
 
                     if (secretsKotlinB.exists()) {
@@ -356,13 +374,13 @@ open class SecureSecrets : Plugin<Project> {
     /**
      * Generate en encoded key from param line params
      */
-    private fun getObfuscatedKeyParam(keyValue: String, project: Project): String {
+    private fun getObfuscatedKeyParam(keyValue: String, project: Project, prefix: String? = null): String {
         println("### SECRET ###\n$keyValue\n")
 
         val packageName = getPackageNameParam(project)
         println("### PACKAGE NAME ###\n$packageName\n")
 
-        val encodedKey = Utils.encodeSecret(keyValue, packageName)
+        val encodedKey = Utils.encodeSecret(keyValue, packageName.plus(".$prefix"))
         println("### OBFUSCATED SECRET ###\n$encodedKey")
         return encodedKey
     }
