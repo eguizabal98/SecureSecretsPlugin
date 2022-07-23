@@ -3,10 +3,11 @@ plugins {
     java
     `kotlin-dsl`
     `maven-publish`
+    id("com.gradle.plugin-publish") version "1.0.0-rc-1"
 }
 
-group = "com.dplg"
-version = "1.0.1"
+group = "com.plugeem"
+version = "1.0.0"
 
 repositories {
     mavenCentral()
@@ -15,21 +16,20 @@ repositories {
 
 gradlePlugin {
     plugins {
-        create("SecureSecrets") {
-            id = "com.dplg.securesecrets"
+        create("SecureSecretsPlugin") {
+            id = "com.plugeem.secureSecrets"
             displayName = "Secure Secrets Plugin"
-            description = "Secure secrets with native code in android projects"
-            implementationClass = "com.dplg.securesecrets.SecureSecrets"
+            description = "This plugin allows any Android developer" +
+                    " to deeply hide secrets in its project to prevent credentials harvesting."
+            implementationClass = "com.plugeem.securesecrets.SecureSecretsPlugin"
         }
     }
 }
 
 pluginBundle {
-    mavenCoordinates {
-        groupId = "com.dplg"
-        artifactId = "SecureSecrets"
-        version = "1.0.1"
-    }
+    website = "https://github.com/eguizabal98/SecureSecretsPlugin"
+    vcsUrl = "https://github.com/eguizabal98/SecureSecretsPlugin.git"
+    tags = listOf("plugin", "android", "hide", "secret", "key", "string", "obfuscate")
 }
 
 dependencies {

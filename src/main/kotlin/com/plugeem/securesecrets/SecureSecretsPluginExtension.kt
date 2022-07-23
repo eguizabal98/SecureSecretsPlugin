@@ -1,4 +1,4 @@
-package com.dplg.securesecrets
+package com.plugeem.securesecrets
 
 import org.gradle.api.provider.ListProperty
 

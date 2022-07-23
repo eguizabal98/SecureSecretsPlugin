@@ -1,10 +1,10 @@
-package com.dplg.securesecrets
+package com.plugeem.securesecrets
 
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.internal.tasks.factory.dependsOn
-import com.dplg.securesecrets.Utils.capitalizeString
+import com.plugeem.securesecrets.Utils.capitalizeString
 import java.io.File
 import java.nio.charset.Charset
 import org.gradle.api.Action
@@ -31,7 +31,7 @@ fun BaseExtension.variant(): DomainObjectSet<out BaseVariant> = when (this) {
     else -> throw GradleException("Unsupported extension")
 }
 
-open class SecureSecrets : Plugin<Project> {
+open class SecureSecretsPlugin : Plugin<Project> {
     companion object {
         private const val APP_MAIN_FOLDER = "src/main/"
         private const val KEY_PLACEHOLDER = "YOUR_KEY_GOES_HERE"
@@ -170,8 +170,8 @@ open class SecureSecrets : Plugin<Project> {
         extension: SecureSecretsPluginExtension
     ) {
         // Get different variants of the project
-        variant.javaCompileProvider.dependsOn("${TASK_HIDE_MULTIPLE_SECRETS}${variant.name}")
-        project.task("${TASK_HIDE_MULTIPLE_SECRETS}${variant.name}") {
+        variant.javaCompileProvider.dependsOn("$TASK_HIDE_MULTIPLE_SECRETS${variant.name}")
+        project.task("$TASK_HIDE_MULTIPLE_SECRETS${variant.name}") {
             dependsOn(TASK_UNZIP_HIDDEN_SECRETS)
 
             doLast {

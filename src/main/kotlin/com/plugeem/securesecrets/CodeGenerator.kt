@@ -1,4 +1,4 @@
-package com.dplg.securesecrets
+package com.plugeem.securesecrets
 
 /**
  * Helper to generate C++ and Kotlin code

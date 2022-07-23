@@ -1,4 +1,4 @@
-package com.dplg.securesecrets
+package com.plugeem.securesecrets
 
 import com.google.common.annotations.VisibleForTesting
 import org.gradle.api.Project
