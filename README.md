@@ -2,9 +2,6 @@
 # Gradle plugin to hide secrets on Android
 
 
-
-Fork of [klaxit plugin](https://github.com/klaxit/hidden-secrets-gradle-plugin)
-
 This plugin allows you to obfuscate strings in native code through the Android NDK to prevent credentials harvesting. It allows to obfuscate keys from [gradle.properties] and handle different values depending on the build type.
 
 
