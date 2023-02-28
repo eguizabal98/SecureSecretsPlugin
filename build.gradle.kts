@@ -3,6 +3,7 @@ plugins {
     java
     `kotlin-dsl`
     `maven-publish`
+    kotlin("jvm") version "1.8.10"
 }
 
 group = "com.plugeem"
