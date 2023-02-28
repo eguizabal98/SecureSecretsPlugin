@@ -59,7 +59,7 @@ open class SecureSecretsPlugin : Plugin<Project> {
 
     override fun apply(project: Project) {
 
-        val tmpFolder: String = java.lang.String.format("%s/hidden-secrets-tmp", project.buildDir)
+        val tmpFolder: String = java.lang.String.format("%s\\hidden-secrets-tmp", project.buildDir)
         val extension = project.extensions.create<SecureSecretsPluginExtension>(EXTENSION_NAME)
 
         project.android().variant().all {
