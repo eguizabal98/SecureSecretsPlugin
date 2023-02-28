@@ -41,12 +41,14 @@ open class SecureSecretsPlugin : Plugin<Project> {
 
         //Tasks
         const val TASK_UNZIP_HIDDEN_SECRETS = "unzipHiddenSecrets"
+        const val TASK_UNZIP_HIDDEN_NO_ENCODED_SECRETS = "unzipHiddenNoEncodedSecrets"
         const val TASK_COPY_CPP = "copyCpp"
         const val TASK_COPY_KOTLIN = "copyKotlin"
         const val TASK_OBFUSCATE = "obfuscate"
         const val TASK_PACKAGE_NAME = "packageName"
         const val TASK_FIND_KOTLIN_FILE = "findKotlinFile"
         const val TASK_HIDE_MULTIPLE_SECRETS = "hideMultipleSecrets"
+        const val TASK_HIDE_MULTIPLE_SECRETS_NO_ENCODE = "hideMultipleSecretsNoEncoded"
 
         //Properties
         private const val KEY = "key"
@@ -63,7 +65,7 @@ open class SecureSecretsPlugin : Plugin<Project> {
         val extension = project.extensions.create<SecureSecretsPluginExtension>(EXTENSION_NAME)
 
         project.android().variant().all {
-            createTask(project, this, tmpFolder, extension)
+            createNoEncodedParamTask(project, this, tmpFolder, extension)
         }
 
         /**
@@ -118,7 +120,7 @@ open class SecureSecretsPlugin : Plugin<Project> {
         project.task(TASK_COPY_CPP)
         {
             doLast {
-                copyCppFiles(project, tmpFolder)
+                copyCppNoEncodedFiles(project, tmpFolder)
             }
         }
 
@@ -163,15 +165,15 @@ open class SecureSecretsPlugin : Plugin<Project> {
         }
     }
 
-    private fun createTask(
+    private fun createNoEncodedParamTask(
         project: Project,
         variant: BaseVariant,
         tmpFolder: String,
         extension: SecureSecretsPluginExtension
     ) {
         // Get different variants of the project
-        variant.javaCompileProvider.dependsOn("$TASK_HIDE_MULTIPLE_SECRETS${variant.name}")
-        project.task("$TASK_HIDE_MULTIPLE_SECRETS${variant.name}") {
+        variant.javaCompileProvider.dependsOn("$TASK_HIDE_MULTIPLE_SECRETS_NO_ENCODE${variant.name}")
+        project.task("$TASK_HIDE_MULTIPLE_SECRETS_NO_ENCODE${variant.name}") {
             dependsOn(TASK_UNZIP_HIDDEN_SECRETS)
 
             doLast {
@@ -196,7 +198,7 @@ open class SecureSecretsPlugin : Plugin<Project> {
                 }
 
                 //Copy files if they don't exist
-                copyCppFiles(project, tmpFolder)
+                copyCppNoEncodedFiles(project, tmpFolder)
                 copyKotlinFile(project, tmpFolder)
 
                 val packageName = getPackageNameParam(project)
@@ -219,9 +221,7 @@ open class SecureSecretsPlugin : Plugin<Project> {
                     var keyName = properList.getValue("SECURE_KEY_${key}").toString()
                     keyName = keyName.replace("_", " ").capitalizeString().replace(" ", "")
                     println("Elias-- $buildTypesSuffix")
-                    val obfuscatedKey = getObfuscatedKeyParam(
-                        properList.getValue("SECURE_VALUE_${buildTypeKey}_${key}").toString(), project, buildTypesSuffix
-                    )
+                    val obfuscatedKey = properList.getValue("SECURE_VALUE_${buildTypeKey}_${key}").toString()
 
                     if (secretsKotlinB.exists()) {
                         var text = secretsKotlinB.readText(Charset.defaultCharset())
@@ -230,7 +230,7 @@ open class SecureSecretsPlugin : Plugin<Project> {
                             println("⚠️ Method already added in Kotlin !")
                         }
                         text = text.dropLast(3)
-                        text += CodeGenerator.getKotlinCode(keyName)
+                        text += CodeGenerator.getKotlinNoEncodedCode(keyName)
                         secretsKotlinB.writeText(text.plus("\n"))
                     } else {
                         error("Missing Kotlin file, please run gradle task : $TASK_COPY_KOTLIN")
@@ -261,34 +261,30 @@ open class SecureSecretsPlugin : Plugin<Project> {
                             secretsCpp.writeText(text)
                         } else {
                             //Add new key
-                            text += CodeGenerator.getCppCode(kotlinPackage, keyName, obfuscatedKey)
+                            text += CodeGenerator.getCppNoEncodedCode(kotlinPackage, keyName, obfuscatedKey)
                             secretsCpp.writeText(text)
                         }
                     } else {
                         error("Missing C++ file, please run gradle task : $TASK_COPY_CPP")
                     }
-                    println("✅ You can now get your secret key by calling : Secrets().get$keyName(packageName)")
+                    println("✅ You can now get your secret key by calling : Secrets().get$keyName()")
                 }
 
             }
         }
     }
 
-    /**
-     * Copy Cpp files from the lib to the Android project if they don't exist yet
-     */
-    private fun copyCppFiles(project: Project, tmpFolder: String) {
+
+    private fun copyCppNoEncodedFiles(project: Project, tmpFolder: String) {
         project.file("$tmpFolder/temp/cpp/").listFiles()?.forEach {
-            if (!it.name.contains("CMakeLists")) {
-                val cppDestination = getCppDestination(it.name, project)
-                if (cppDestination.exists()) {
-                    println("${it.name} already exists")
-                    cppDestination.delete()
-                    it.copyTo(cppDestination, true)
-                } else {
-                    println("Copy $it.name to\n$cppDestination")
-                    it.copyTo(cppDestination, true)
-                }
+            val cppDestination = getCppDestination(it.name, project)
+            if (cppDestination.exists()) {
+                println("${it.name} already exists")
+                cppDestination.delete()
+                it.copyTo(cppDestination, true)
+            } else {
+                println("Copy $it.name to\n$cppDestination")
+                it.copyTo(cppDestination, true)
             }
         }
     }
@@ -370,23 +366,5 @@ open class SecureSecretsPlugin : Plugin<Project> {
         }
         path += fileName
         return project.file(path)
-    }
-
-    /**
-     * Generate en encoded key from param line params
-     */
-    private fun getObfuscatedKeyParam(keyValue: String, project: Project, prefix: String? = null): String {
-        println("### SECRET ###\n$keyValue\n")
-
-        val packageName = getPackageNameParam(project)
-        println("### PACKAGE NAME ###\n$packageName\n")
-
-        val encodedKey = if (prefix.isNullOrEmpty()){
-            Utils.encodeSecret(keyValue, packageName)
-        } else {
-            Utils.encodeSecret(keyValue, packageName.plus(".$prefix"))
-        }
-        println("### OBFUSCATED SECRET ###\n$encodedKey")
-        return encodedKey
     }
 }

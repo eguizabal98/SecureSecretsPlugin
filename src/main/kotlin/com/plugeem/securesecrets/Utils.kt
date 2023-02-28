@@ -9,9 +9,6 @@ import kotlin.experimental.xor
 
 object Utils {
 
-    /**
-     * Transform package name com.klaxit.hidden to com_klaxit_hidden to ingrate in C++ code
-     */
     fun getSnakeCasePackageName(packageName: String): String {
         val packageComponents = packageName.split(".")
         var packageStr = ""

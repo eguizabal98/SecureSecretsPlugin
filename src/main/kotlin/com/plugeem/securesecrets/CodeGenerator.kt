@@ -5,27 +5,19 @@ package com.plugeem.securesecrets
  */
 object CodeGenerator {
 
-    /**
-     * Return the C++ code to add another key to your project
-     */
-    fun getCppCode(packageName: String, keyName: String, obfuscatedKey: String): String {
+    fun getCppNoEncodedCode(packageName: String, keyName: String, obfuscatedKey: String): String {
 
-        return "\nextern \"C\"\n" +
-                "JNIEXPORT jstring JNICALL\n" +
+        return "\nextern \"C\" JNIEXPORT jstring JNICALL\n" +
                 "Java_" + Utils.getSnakeCasePackageName(packageName) + "_Secrets_get$keyName(\n" +
-                "        JNIEnv* pEnv,\n" +
-                "        jobject pThis,\n" +
-                "        jstring packageName) {\n" +
-                "     char obfuscatedSecret[] = $obfuscatedKey;\n" +
-                "     return getOriginalKey(obfuscatedSecret, sizeof(obfuscatedSecret), packageName, pEnv);\n" +
+                "        JNIEnv* env,\n" +
+                "        jobject pThis) {\n" +
+                "     std::string api_key = $obfuscatedKey;\n" +
+                "     return env->NewStringUTF(api_key.c_str());\n" +
                 "}\n"
     }
 
-    /**
-     * Kotlin code that will be added in your project
-     */
-    fun getKotlinCode(keyName: String): String {
-        return "\n    external fun get$keyName(packageName: String): String\n" +
+    fun getKotlinNoEncodedCode(keyName: String): String {
+        return "\n    external fun get$keyName(): String\n" +
                 "}"
     }
 }
