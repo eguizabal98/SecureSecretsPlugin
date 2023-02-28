@@ -41,14 +41,12 @@ open class SecureSecretsPlugin : Plugin<Project> {
 
         //Tasks
         const val TASK_UNZIP_HIDDEN_SECRETS = "unzipHiddenSecrets"
-        const val TASK_UNZIP_HIDDEN_NO_ENCODED_SECRETS = "unzipHiddenNoEncodedSecrets"
         const val TASK_COPY_CPP = "copyCpp"
         const val TASK_COPY_KOTLIN = "copyKotlin"
         const val TASK_OBFUSCATE = "obfuscate"
         const val TASK_PACKAGE_NAME = "packageName"
         const val TASK_FIND_KOTLIN_FILE = "findKotlinFile"
         const val TASK_HIDE_MULTIPLE_SECRETS = "hideMultipleSecrets"
-        const val TASK_HIDE_MULTIPLE_SECRETS_NO_ENCODE = "hideMultipleSecretsNoEncoded"
 
         //Properties
         private const val KEY = "key"
@@ -172,8 +170,8 @@ open class SecureSecretsPlugin : Plugin<Project> {
         extension: SecureSecretsPluginExtension
     ) {
         // Get different variants of the project
-        variant.javaCompileProvider.dependsOn("$TASK_HIDE_MULTIPLE_SECRETS_NO_ENCODE${variant.name}")
-        project.task("$TASK_HIDE_MULTIPLE_SECRETS_NO_ENCODE${variant.name}") {
+        variant.javaCompileProvider.dependsOn("$TASK_HIDE_MULTIPLE_SECRETS${variant.name}")
+        project.task("$TASK_HIDE_MULTIPLE_SECRETS${variant.name}") {
             dependsOn(TASK_UNZIP_HIDDEN_SECRETS)
 
             doLast {
